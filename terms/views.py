@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from config.functions import *
+from ast import literal_eval
 import json
 import urllib.error
 import urllib.parse
@@ -64,6 +65,12 @@ def byont(request, svrid, ontid):
 @csrf_exempt
 def trmsrc(request, svrid, srcstr):
     svr = Servers.objects.get(id=svrid)
+    # check srcstr variable for code
+    try:
+        literal_eval(srcstr)
+        redirect('/terms')
+    except ValueError:
+        pass
     with urllib.request.urlopen(
             svr.apiurl + 'search?q=' + urllib.parse.quote_plus(srcstr) + '&exact=true&rows=10000&lang=en') as url:
         data = json.loads(url.read().decode())
