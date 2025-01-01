@@ -9,6 +9,7 @@ import json
 import urllib.error
 import urllib.parse
 import urllib.request
+import re
 
 
 # Create your views here.
@@ -70,7 +71,8 @@ def trmsrc(request, svrid, srcstr):
         literal_eval(srcstr)
         redirect('/terms')
     except ValueError:
-        pass
+        if not re.match("^[a-zA-Z0-9-_ ]+$", srcstr):
+            redirect('/terms')
     with urllib.request.urlopen(
             svr.apiurl + 'search?q=' + urllib.parse.quote_plus(srcstr) + '&exact=true&rows=10000&lang=en') as url:
         data = json.loads(url.read().decode())
