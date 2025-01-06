@@ -82,7 +82,7 @@ def jsfldadd(request):
         ctxid = data['ctxid']
         # check if field exists (assume context does)
         fld = Fields.objects.get(id=fldid)
-        if not fld.exists():
+        if not fld:
             fld = Fields()
             fld.name = data['name']
             fld.datatype = data['datatype']
