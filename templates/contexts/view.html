@@ -8,7 +8,7 @@
                 <li>Project: {{ context.project.name }}</li>
                 <li>Description: {{ context.description }} </li>
                 <li>URL:
-                    {% with url="https://stuchalk.github.io/scidata/contexts/"|add:context.filename|add:".jsonld" %}
+                    {% with url=""|add:url|add:context.filename|add:".jsonld" %}
                         <a href="{{ url }}" target="_blank">{{ url }}</a>
                     {% endwith %}
                 </li>

@@ -4,10 +4,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.forms.models import model_to_dict
 from config.functions import *
 from config.langs import *
-from config.git_functions import *
 from datetime import datetime
 from collections import OrderedDict
 from config.settings import *
+from config.git_functions import *
 import os
 
 
@@ -22,6 +22,10 @@ def index(request):
 
 
 def view(request, ctxid):
+    rurl = getgiturl()
+    parts = rurl.split('/')
+    print(parts)
+    url = 'https://' + parts[3] + '.github.io/' + parts[4].replace('.git', '') + '/cxts/'
     ctx = getctx(ctxid)
     if ctx.subcontexts is not None:
         subids = ctx.subcontexts.split(',')
@@ -32,8 +36,8 @@ def view(request, ctxid):
     fldids = ctx.contextsfields_set.filter(context_id=ctxid).values_list('field_id', flat=True)
     flds = Fields.objects.filter(id__in=fldids)
     trms = gettrms()
-    return render(request, "contexts/view.html",
-                  {'context': ctx, 'fields': flds, 'trms': trms, 'ctxs': ctxs, 'subids': subids, 'act': 'Add'})
+    return render(request, "contexts/view.html", {'context': ctx, 'fields': flds, 'trms': trms,
+                                                  'ctxs': ctxs, 'subids': subids, 'act': 'Add', 'url': url})
 
 
 def add(request):
@@ -145,13 +149,13 @@ def jswrtctx(request, ctxid: int):
         cdict.update({cfjoin.field.name: tmp})
     jld = {"@context": cdict}
     # check for being part of a project
-    fpath = 'website/contexts/'
+    fpath = 'ctxs/'
     if ctx.project_id:
         fpath += ctx.project.prefix + '_'
     fpath += ctx.filename + '.jsonld'
     jsn = json.dumps(jld, separators=(',', ':'))
     # save local
-    os.makedirs(os.path.dirname(BASE_DIR + '/website/contexts/'), exist_ok=True)  # create a directory if not exist
+    os.makedirs(os.path.dirname(BASE_DIR + '/ctxs/'), exist_ok=True)  # create a directory if not exist
     with open(fpath, "w") as f:
         f.write(jsn)
     f.close()

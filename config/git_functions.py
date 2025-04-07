@@ -1,6 +1,7 @@
 from github import Github
 from github.GithubException import *
 from config.localsettings import ghtoken
+import subprocess
 
 
 def addctxfile(path, message, file, repo="SciContext", token=ghtoken):
@@ -33,3 +34,8 @@ def addctxfile(path, message, file, repo="SciContext", token=ghtoken):
     else:
         status = 'success'
     return status
+
+
+def getgiturl():
+    url = subprocess.check_output(['git', 'config', '--get', 'remote.origin.url']).decode('utf-8').strip('\n')
+    return url
