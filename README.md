@@ -22,4 +22,4 @@ On the other side context files for JSON-LD documents have sort of abstract as i
 However, in order for JSON-LD files to be converted accurately into RDF they are critical and so writing and publishing 
 them 
 
-![scicontext_data_model.jpg](images/scicontext_data_model.jpg)
+![scicontext_data_model.jpg](static/images/scicontext_data_model.jpg)
