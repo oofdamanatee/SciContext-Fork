@@ -44,12 +44,12 @@ INSTALLED_APPS = [
     'corsheaders',
     'crispy_forms',
     'contexts',
+    'contexts_fields',
     'fields',
     'onts',
-    'terms',
-    'contexts_fields',
-    'servers',
     'projects',
+    'servers',
+    'terms',
 ]
 
 MIDDLEWARE = [

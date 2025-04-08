@@ -40,6 +40,10 @@ class Contexts(models.Model):
         db_table = 'contexts'
         app_label = 'contexts'
 
+    @property
+    def getfile(self):
+        return f"This context has filename {self.filename}"
+
 
 class ContextJoins(models.Model):
     parent = models.ForeignKey(Contexts, on_delete=models.DO_NOTHING, db_column='parent_id', blank=True, null=True)
