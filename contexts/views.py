@@ -68,12 +68,6 @@ def add(request):
     return render(request, "contexts/add.html", {'ctxs': ctxs, 'prjs': prjs, 'langs': langs})
 
 
-# testing functions
-def getfile(name):
-    hit = Contexts.objects.get(name=name)
-    return hit
-
-
 # ajax functions (wrappers)
 
 
