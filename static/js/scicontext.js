@@ -57,8 +57,8 @@ $(document).ready(function() {
         });
     });
 
+    // for form in template onts/add.html
     $('#alias').on('blur', function() {
-        // for form in template onts/add.html
         let input = $('#alias');
         let nss = $('#aliases').html();
         let ns = input.val();
@@ -69,14 +69,15 @@ $(document).ready(function() {
         return false;
     });
 
+    // for ols ont list in template onts/add.html
     $('.olsont').on('click', function() {
-        // for ols ont list in template onts/add.html
         let ont = $(this);
         let meta = ont.attr('data-ont').split("*");
         let nss = $('#aliases').html();
         if (nss.includes(':' + meta[1].toLowerCase() + ':')) {
             alert('An ontology with this namespace is already in use');
-        } else {
+        }
+        else {
             $('#name').val(meta[0]);
             $('#alias').val(meta[1]);
             $('#path').val(meta[2]);
@@ -114,7 +115,7 @@ $(document).ready(function() {
 
     // populate onto term from ontology button on
     $('#terms').on('click','.terms', function() {
-        // set event to fire on parent of dynamically added dom element ('.term')
+        // set event to fire on parent of dynamically added dom element (.term)
         let term = $(this);
         let title = term.val();
         let nsid = term.attr('data-alias');
@@ -175,9 +176,9 @@ $(document).ready(function() {
         let type = $('#type').find(":selected").text();
 
         let form = input.closest('form');
-        let fldid = form.attr('data-fldid')
-        let ctxid = form.attr('data-ctxid')
-        let saved = form.attr('data-saved');
+        // let fldid = form.attr('data-fldid')
+        // let ctxid = form.attr('data-ctxid')
+        let saved;
         saved = {"name": name, "trmid": trmid, "cat": cat, "con": con, "type": type};
         form.data('saved', saved);
         return false;
@@ -198,7 +199,7 @@ $(document).ready(function() {
             alert(fldid + ":" + ctxid)
         }
         // alert(fldid + ":" + ctxid)
-        return false;
+        // return false;
         let token = $('input[name="csrfmiddlewaretoken"]').val();
         $.post('/fields/delete/', {fldid: fldid, ctxid: ctxid, csrfmiddlewaretoken: token})
             .done(function ( data ) {
@@ -330,7 +331,7 @@ $(document).ready(function() {
         let fld = $(this);
         let fldid = fld.attr('data-fldid');
         $.get('/fields/read/' + fldid, function( fdata ) {
-            let form = $('#fieldform');
+            // let form = $('#fieldform');
             $('#name').val(fdata.name).data('old',fdata.name);
             $('#term_id').val(fdata.term_id).data('old',fdata.term_id);
             $('#category').val(fdata.category).data('old',fdata.category);
