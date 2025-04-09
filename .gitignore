@@ -17,8 +17,8 @@ tests/.coverage
 build/
 tests/report/
 .idea/
-config/localsettings.py
 static/replacelog.txt
 Pipfile.lock
 config/git_testing.py
 config/ols_testing.py
+.env

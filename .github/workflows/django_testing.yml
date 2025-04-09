@@ -3,7 +3,7 @@ name: Django testing
 on: [push, pull_request]
 
 env:
-  sctoken: ${{ secrets.SCTOKEN }}
+  SCTOKEN: ${{ secrets.SCTOKEN }}
 
 jobs:
   build:

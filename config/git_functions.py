@@ -1,6 +1,6 @@
 from github import Github
 from github.GithubException import *
-from config.localsettings_gh import ghtoken
+from config.localsettings import ghtoken
 import subprocess
 
 
