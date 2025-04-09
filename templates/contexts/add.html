@@ -14,7 +14,7 @@
                     <div class="container-fluid">
                         <form id="addform" action="/contexts/add/" method="post">
                             {% csrf_token %}
-                            <div class="input-group mb-2">
+                            <div id="project" class="input-group mb-2">
                                 <label id="ctx_prjid" for="prjid" class="input-group-text" title="Choose a project">Project (optional):</label>
                                 <select id="prjid" name="prjid" class="form-control" aria-describedby="prjid" {% if not prjs %}disabled{% endif %}>
                                     <option value="">Choose...</option>
@@ -23,19 +23,19 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="input-group mb-2">
+                            <div id="name" class="input-group mb-2">
                                 <label id="ctx_name" for="name" class="input-group-text" title="Add a name">Name:</label>
                                 <input type="text" class="form-control" name="name" id="name" value="" aria-describedby="ctx_name"/>
                             </div>
-                            <div class="input-group mb-2">
+                            <div id="desc" class="input-group mb-2">
                                 <label id="ctx_desc" for="description" class="input-group-text" title="Add a description">Description:</label>
                                 <input type="text" class="form-control" name="description" id="description" value="" aria-describedby="ctx_desc"/>
                             </div>
-                            <div class="input-group mb-2">
+                            <div id="filename" class="input-group mb-2">
                                 <label id="ctx_fname" for="filename" class="input-group-text" title="What the filename?">Filename (no extension):</label>
                                 <input type="text" class="form-control" name="filename" id="filename" value="" aria-describedby="filename"/>
                             </div>
-                            <div class="row mb-2">
+                            <div id="version" class="row mb-2">
                                 <div class="col">
                                     <div class="input-group">
                                         <label id="ctx_version" for="version" class="input-group-text" title="Context version">Context version:</label>
@@ -54,7 +54,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="input-group mb-2">
+                            <div id="vocab" class="input-group mb-2">
                                 <label id="ctx_vocab" for="vocab" class="input-group-text" title="Vocabulary to be used as default for @type">@vocab (default for @type):</label>
                                 <select id="vocab" name="vocab" class="form-control" aria-describedby="vocab">
                                     <option value="" selected>Choose vocabulary...</option>
@@ -63,7 +63,7 @@
                                     <option value="http://purl.org/dc/terms">Dublin Core Terms (http://purl.org/dc/terms)</option>
                                 </select>
                             </div>
-                            <div class="input-group mb-2">
+                            <div id="subctxs" class="input-group mb-2">
                                 <label id="ctx_subctxs" for="subctxs" class="input-group-text" title="Contexts to be referenced in the context file">Sub-Contexts:<br/>(multiple)</label>
                                 <select multiple size="{% if ctxs %}5{% else %}1{% endif %}" class="form-control" name="subctxs" id="subctxs" aria-describedby="subctxs" {% if not ctxs %}disabled{% endif %}>
                                     <option value="" selected>{% if ctxs %}Choose one or more...{% else %}Disabled (no contexts){% endif %}</option>
@@ -72,7 +72,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="form-group mt-2">
+                            <div id="submit" class="form-group mt-2">
                                 <div class="float-end">
                                     <input type="submit" value="Add"/>
                                 </div>

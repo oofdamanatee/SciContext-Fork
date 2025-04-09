@@ -1,6 +1,12 @@
 name: Django testing
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - 'contexts/**'
+  pull_request:
+    paths-ignore:
+      - 'contexts/**'
 
 env:
   SCTOKEN: ${{ secrets.SCTOKEN }}

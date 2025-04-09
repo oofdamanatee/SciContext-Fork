@@ -189,3 +189,15 @@ def ontload(svrid, ontid):
             t.save()
 
     return True
+
+
+def wpexists(url):
+    try:
+        response = requests.get(url)
+        if response.status_code in [200, 301, 302, 304, 307]:
+            return response.status_code
+        else:
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Error occurred: {e}")
+        return "error"

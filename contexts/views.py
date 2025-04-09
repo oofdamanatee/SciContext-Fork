@@ -22,10 +22,7 @@ def index(request):
 
 
 def view(request, ctxid):
-    rurl = getgiturl()
-    parts = rurl.split('/')
-    print(parts)
-    url = 'https://' + parts[3] + '.github.io/' + parts[4].replace('.git', '') + '/cxts/'
+    # get context
     ctx = getctx(ctxid)
     if ctx.subcontexts is not None:
         subids = ctx.subcontexts.split(',')
@@ -33,11 +30,18 @@ def view(request, ctxid):
     else:
         subids = None
         ctxs = None
+    # get fields assigned to this context
     fldids = ctx.contextsfields_set.filter(context_id=ctxid).values_list('field_id', flat=True)
     flds = Fields.objects.filter(id__in=fldids)
+    # get the current list of terms to populate the dropdown
     trms = gettrms()
+    # check if the context file is already on GitHub
+    ctxup = None
+    code = wpexists(ctx.url)
+    if code is not None:
+        ctxup = "yes"
     return render(request, "contexts/view.html", {'context': ctx, 'fields': flds, 'trms': trms,
-                                                  'ctxs': ctxs, 'subids': subids, 'act': 'Add', 'url': url})
+                                                  'ctxs': ctxs, 'subids': subids, 'act': 'Add', 'ctxup': ctxup})
 
 
 def add(request):
@@ -56,8 +60,23 @@ def add(request):
         ctx.version = data['version']
         ctx.vocab = data['vocab']
         ctx.language = data['lang']
-        temp = list(request.POST.getlist('subctxs'))
-        ctx.subcontexts = ','.join(temp)  # bizarre syntax, but it works!
+        temp = list(data.getlist('subctxs'))
+        if temp != "":
+            ctx.subcontexts = ','.join(temp)  # bizarre syntax, but it works!
+        else:
+            ctx.subcontexts = None
+        # get project prefix if there is one
+        pre = ''
+        if ctx.project_id:
+            pre = ctx.project.prefix + '_'
+        # get GitHub repo URL
+        rurl = getgiturl()
+        parts = rurl.split('/')
+        usr, repo = parts[3], parts[4].replace('.git', '')
+        # create context file URL
+        url = 'https://' + usr + '.github.io/' + repo + '/ctxs/' + pre + ctx.filename + '.jsonld'
+        ctx.url = url
+        # save context
         ctx.updated = datetime.now()
         ctx.save()
         return redirect('/contexts/view/' + str(ctx.id))

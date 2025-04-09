@@ -7,12 +7,12 @@
             <ul>
                 <li>Project: {{ context.project.name }}</li>
                 <li>Description: {{ context.description }} </li>
-                <li>URL:
-                    {% with url=""|add:url|add:context.filename|add:".jsonld" %}
-                        <a href="{{ url }}" target="_blank">{{ url }}</a>
-                    {% endwith %}
-                </li>
-                {% if ctxs %}
+                {% if ctxup == "yes" %}
+                    <li>URL: <a href="{{ context.url }}" target="_blank">{{ context.url }}</a></li>
+                {% else %}
+                    <li>URL: {{ context.url }} (once its created)</li>
+                {% endif %}
+                {% if ctxs is not None %}
                     <li>Sub-Contexts:
                         {% for ctx in ctxs %}
                             <a href="/contexts/view/{{ ctx.id }}" target="_blank">{{ ctx.name }}</a>

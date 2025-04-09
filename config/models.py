@@ -32,6 +32,7 @@ class Contexts(models.Model):
     language = models.CharField(max_length=2, blank=True, null=True)
     base = models.CharField(max_length=128, blank=True, null=True)
     filename = models.CharField(max_length=128, blank=True, null=True)
+    url = models.CharField(max_length=128, blank=True, null=True)
     subcontexts = models.CharField(max_length=256, blank=True, null=True)
     updated = models.DateTimeField()
 
