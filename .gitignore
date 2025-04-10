@@ -21,4 +21,5 @@ static/replacelog.txt
 Pipfile.lock
 config/git_testing.py
 config/ols_testing.py
+config/onto_testing.py
 .env

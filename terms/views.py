@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from config.functions import *
-from ast import literal_eval
+import ast
 import json
 import urllib.error
 import urllib.parse
@@ -65,51 +65,10 @@ def byont(request, svrid, ontid):
 
 @csrf_exempt
 def trmsrc(request, svrid, srcstr):
-    svr = Servers.objects.get(id=svrid)
-    # check srcstr variable for code
-    try:
-        literal_eval(srcstr)
-        redirect('/terms')
-    except ValueError:
-        if not re.match("^[a-zA-Z0-9-_ ]+$", srcstr):
-            redirect('/terms')
-    with urllib.request.urlopen(
-            svr.apiurl + 'search?q=' + urllib.parse.quote_plus(srcstr) + '&exact=true&rows=10000&lang=en') as url:
-        data = json.loads(url.read().decode())
-    terms = data['response']['docs']
-    # return JsonResponse(terms, safe=False, status=200)
-    tlist = {}
-    for term in terms:
-        # ignore duplicates based on defining ontology (if available)
-        if 'is_defining_ontology' in term.keys():
-            if not term['is_defining_ontology']:
-                continue
-        # if no unqiue code available ignore
-        if 'short_form' not in term.keys():
-            continue
-        # ignore duplicates using the term code
-        if term['short_form'] in tlist.keys():
-            continue
-        # ignore individuals
-        if term['type'] == 'individual':
-            continue
-        if 'description' in term.keys():
-            if len(term['description']) == 0:
-                desc = "Not available"
-            else:
-                tmp = term['description']
-                desc = tmp[0]
-        else:
-            desc = "Not available"
-        tlist.update({term['short_form']: {"title": term['label'], 'defn': desc, 'ns': term['ontology_name'],
-                                           'type': term['type']}})
-    # generate output list of dictionaries
-    output = []
-    for key, value in tlist.items():
-        # add the ontology ID in the database
-        ont = Onts.objects.get(ns=value['ns'], server_id=svr.id)
-        output.append({"code": key, "title": value['title'], "defn": value['defn'],
-                       "ns": value['ns'], "ontid": ont.id, 'type': value['type']})
-    # sort
+    # remove any URL encoding in the incomg search string
+    srcstr = urllib.parse.unquote(srcstr)
+    # search the OLS server
+    output = svrsearch(svrid, srcstr)
+    # sort the results by title
     out2 = sorted(output, key=lambda d: d['title'])
     return JsonResponse(out2, safe=False, status=200)

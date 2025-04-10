@@ -30,7 +30,7 @@ def add(request):
                 if data[key][0] == '':
                     data[key][0] = None
             else:
-                data[key] = None
+                data[key] = ''
         s = Servers()
         s.name = data['name']
         s.abbrev = data['abbrev']

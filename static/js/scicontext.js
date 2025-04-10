@@ -234,13 +234,19 @@ $(document).ready(function() {
                 let cnt = data.length;
                 for(let i = 0; i<cnt; i++) {
                     let trm = data[i];
+                    let disabled = ''; let message = trm['type'];
+                    if(trm['local'] === "yes") {
+                        disabled = ' disabled';
+                        message = "Added!";
+                    }
                     let disp = '(<span class="emph_green">' + trm['ns'] + '</span>) [' + trm['code'] + '] ' +
-                        trm['title'] + ': <em>' + trm['defn'] + '</em> (<span class="emph_red">' + trm['type'] + '</span>)';
+                        trm['title'] + ': <em>' + trm['defn'] + '</em> (<span class="emph_red">' + message + '</span>)';
                     let content = trm['title'].toLowerCase() + ' ' + trm['defn'].toLowerCase() + ' ' +
                         trm['ns'].toLowerCase() + trm['code'].toLowerCase()
-                    let hit = '<a class="list-group-item item item-sm addtrm" data-svrid="' + svrid + '" data-code="' +
-                        trm['code'] + '" data-title="' + trm['title'] + '" data-ns="' + trm['ns'] + '" data-defn="' +
-                        trm['defn'] + '" data-ontid="' + trm['ontid'] + '" data-content="' + content + '" style="cursor: pointer;">' + disp + '</a>'
+                    let hit = '<a class="list-group-item item item-sm addtrm' + disabled +
+                        '" data-svrid="' + svrid + '" data-code="' + trm['code'] + '" data-title="' + trm['title'] +
+                        '" data-ns="' + trm['ns'] + '" data-defn="' + trm['defn'] + '" data-ontid="' + trm['ontid'] +
+                        '" data-content="' + content + '" style="cursor: pointer;">' + disp + '</a>'
                     div.append(hit);
                 }
                 spin.hide();

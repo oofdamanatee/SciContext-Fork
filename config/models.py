@@ -76,12 +76,13 @@ class Servers(models.Model):
 
 class Onts(models.Model):
     """ contexts onts table """
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, null=True)
     ns = models.CharField(max_length=8)
-    path = models.CharField(unique=True, max_length=64)
+    path = models.CharField(unique=True, max_length=256, blank=True, null=True)
     description = models.CharField(max_length=512, blank=True, null=True)
-    homepage = models.CharField(max_length=128)
-    server = models.ForeignKey(Servers, on_delete=models.DO_NOTHING, db_column='server_id')
+    homepage = models.CharField(max_length=256, blank=True, null=True)
+    server_id = models.IntegerField(blank=True, null=True)
+    servers = models.ManyToManyField(Servers)
     trmcnt = models.IntegerField(blank=True, null=True)
     version = models.CharField(max_length=16, blank=True, null=True)
     updated = models.DateTimeField()
@@ -91,6 +92,17 @@ class Onts(models.Model):
         ordering = 'name',
         db_table = 'onts'
         app_label = 'onts'
+
+
+# used to work with data in join table when needed
+class OntsServers(models.Model):
+    ontid = models.ForeignKey(Onts, on_delete=models.DO_NOTHING, db_column='onts_id')
+    svrid = models.ForeignKey(Servers, on_delete=models.DO_NOTHING, db_column='servers_id')
+
+    class Meta:
+        managed = False
+        db_table = 'onts_servers'
+        app_label = 'onts_servers'
 
 
 class Terms(models.Model):

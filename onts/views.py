@@ -3,6 +3,7 @@ from django.shortcuts import render, redirect
 from config.functions import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from config.ols_functions import *
 import urllib.request
 import json
 
@@ -20,8 +21,11 @@ def view(request, ontid):
     if not trms:
         # on terms loaded so go get list from the server
         loaded = 'no'
-        svrid = ont.server.id
-        trms = svronttrms(svrid, ontid)
+        svrs = ont.servers.all()
+        for svr in svrs:
+            if svr.type == 'ols':
+                trms = svronttrms(svr.id, ontid)
+                break
     else:
         loaded = 'yes'
 
@@ -69,12 +73,5 @@ def ontupd(request, svrid, ontid):
 @csrf_exempt
 def bysvr(request, svrid):
     # get a list of ontologies on a server
-    svr = Servers.objects.get(id=svrid)
-    with urllib.request.urlopen(svr.apiurl + 'ontologies?size=10000') as url:
-        data = json.loads(url.read().decode())
-    onts = data['_embedded']['ontologies']
-    ontlist = []
-    for ont in onts:
-        meta = ont['config']
-        ontlist.append({"ns": meta['namespace'], "title": meta['title'], "count": ont['numberOfTerms']})
+    ontlist = svronts(svrid)
     return JsonResponse(ontlist, safe=False, status=200)
