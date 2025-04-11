@@ -3,8 +3,8 @@ import django
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
-from config.models import *
-
+# from config.models import *
+from config.olsapi import *
 
 # onts = Onts.objects.all()
 # for ont in onts:
@@ -14,6 +14,6 @@ from config.models import *
 #     added = OntsServers.objects.create(ontid=ontid, svrid=svrid)
 #     print("added " + str(ont.id) + ":" + str(svrid))
 
-ont = Onts.objects.get(id=264)
-svrs = ont.servers.all()
-print(svrs)
+
+olist = getonts(1, True)
+print(json.dumps(olist, indent=4))

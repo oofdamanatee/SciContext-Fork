@@ -81,10 +81,10 @@ class Onts(models.Model):
     path = models.CharField(unique=True, max_length=256, blank=True, null=True)
     description = models.CharField(max_length=512, blank=True, null=True)
     homepage = models.CharField(max_length=256, blank=True, null=True)
-    server_id = models.IntegerField(blank=True, null=True)
     servers = models.ManyToManyField(Servers)
     trmcnt = models.IntegerField(blank=True, null=True)
     version = models.CharField(max_length=16, blank=True, null=True)
+    langs = models.CharField(max_length=64, blank=True, null=True)
     updated = models.DateTimeField()
 
     class Meta:

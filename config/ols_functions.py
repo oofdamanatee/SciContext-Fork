@@ -30,7 +30,8 @@ def svronttrms(svrid, ontid):
     tlist = []
     if svr.type == 'ols':
         client = Ols4Client(svr.apiurl)
-        resp = client.get_terms(ont.ns, params=)
+        ns = ont.ns
+        resp = client.get_terms(ns, {})
         terms = resp.embedded.terms
         for term in terms:
             desc = None
