@@ -1,6 +1,7 @@
 # store language option variable
 
 langs = {
+  "": "Select the language...",
   "ab": "Abkhazian",
   "aa": "Afar",
   "af": "Afrikaans",

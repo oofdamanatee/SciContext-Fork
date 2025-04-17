@@ -22,6 +22,9 @@ class Projects(models.Model):
         db_table = 'projects'
         app_label = 'projects'
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class Contexts(models.Model):
     name = models.CharField(max_length=64)

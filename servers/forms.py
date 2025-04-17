@@ -1,3 +1,4 @@
+""" definition of input forms for the server app """
 from django import forms
 
 

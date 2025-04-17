@@ -8,6 +8,7 @@ from datetime import datetime
 from collections import OrderedDict
 from config.settings import *
 from config.git_functions import *
+from .forms import ContextAddForm
 import os
 
 
@@ -80,11 +81,13 @@ def add(request):
         ctx.updated = datetime.now()
         ctx.save()
         return redirect('/contexts/view/' + str(ctx.id))
+    else:
+        form = ContextAddForm
 
     ctxs = getctxs()
     prjs = getprjs()
     # load languages from config/langs.py (lang variable)
-    return render(request, "contexts/add.html", {'ctxs': ctxs, 'prjs': prjs, 'langs': langs})
+    return render(request, "contexts/add.html", {'ctxs': ctxs, 'prjs': prjs, 'langs': langs, 'form': form})
 
 
 # ajax functions (wrappers)
