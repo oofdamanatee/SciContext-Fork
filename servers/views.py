@@ -4,11 +4,12 @@ from config.functions import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from datetime import datetime
+from .forms import ServerAddForm
 
 
 # Create your views here.
 def index(request):
-    """view to generate list of ontology servers"""
+    """ view to generate a list of ontology servers """
     servers = getsvrs()
     return render(request, "servers/index.html", {'servers': servers})
 
@@ -23,28 +24,32 @@ def add(request):
     # add a server
     if request.method == "POST":
         # save new namespace
-        post = request.POST  # post is immutable QueryDict
-        data = post.copy()  # required to identify empty values (creates mutable QueryDict)
-        for key in data.keys():  # only expecting single values for each field
-            if data[key]:
-                if data[key][0] == '':
-                    data[key][0] = None
-            else:
-                data[key] = ''
-        s = Servers()
-        s.name = data['name']
-        s.abbrev = data['abbrev']
-        s.description = data['desc']
-        s.homepage = data['home']
-        s.apiurl = data['apiurl']
-        s.apikey = data['apikey']
-        s.headers = data['headers']
-        s.type = data['type']
-        s.updated = datetime.now()
-        s.save()
-        return redirect('/servers/')
+        form = ServerAddForm(request.POST)
+        if form.is_valid():
+            data = form.cleaned_data
+            for key in data.keys():  # only expecting single values for each field
+                if data[key]:
+                    if data[key][0] == '':
+                        data[key][0] = None
+                else:
+                    data[key] = None
+            s = Servers(
+                name=data['name'],
+                abbrev=data['abbrev'],
+                description=data['desc'],
+                homepage=data['home'],
+                apiurl=data['apiurl'],
+                apikey=data['apikey'],
+                version=data['version'],
+                type=data['type'],
+                updated=datetime.now()
+            )
+            s.save()
+            return redirect('/servers/')
+    else:
+        form = ServerAddForm
 
-    return render(request, "servers/add.html", {})
+    return render(request, "servers/add.html", {"form": form})
 
 
 # JavaScript AJAX functions
@@ -52,7 +57,7 @@ def add(request):
 
 @csrf_exempt
 def svrget(request, svrid):
-    # get current list of ontologies on server
+    # get the current list of ontologies on server
     sonts = svronts(svrid)
     return JsonResponse(sonts, safe=False, status=200)
 

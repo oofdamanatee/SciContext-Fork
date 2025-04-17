@@ -1,7 +1,6 @@
 """ OLS API functions based on v4 of OLS (https://www.ebi.ac.uk/ols4/help) """
 from config.models import *
 import requests
-import json
 from datetime import datetime
 from pytz import timezone
 
@@ -44,20 +43,56 @@ def getonts(svrid, upd=False):
                 config['title'] = ont['ontologyId']
         # add/update to the onts table
         if upd:
-            found = Onts.objects.get(ns=ont['ontologyId'])
+            found = Onts.objects.filter(ns=ont['ontologyId'])
             if found:
-                found.version = ont['version']
-                found.langs = ", ".join(ont['languages'])
-                found.trmcnt = ont['numberOfTerms']
-                found.updated = datetime.now(tz)
-                found.save()
+                upd = found[0]
+                upd.trmcnt = ont['numberOfTerms']
+                upd.updated = datetime.now(tz)
+                upd.save()
+                print("found " + ont['ontologyId'] + " in the database")
+                # check if there is a join for this ontology
+                langs = None
+                if 'languages' in ont.keys():
+                    langs = ", ".join(ont['languages'])
+                found2 = OntsServers.objects.filter(ontid=upd, svrid=svrid)
+                if found2:
+                    # update server-specific info in the join table
+                    found2[0].langs = langs
+                    found2[0].version = ont['version']
+                    found2[0].save()
+                    print("updated join table for " + ont['ontologyId'])
+                else:
+                    # add join to onts_servers
+                    newos = OntsServers.objects.create(
+                        svrid=svr, ontid=upd, langs=langs, version=ont['version']
+                    )
+                    newos.save()
+                    print("added join for ontology " + ont['ontologyId'])
+
             else:
+                langs = None
+                if 'fileLocation' not in ont.keys():
+                    ont['fileLocation'] = None
+                if 'languages' not in ont.keys():
+                    ont['languages'] = None
+                else:
+                    langs = ", ".join(ont['languages'])
+
+                # add ontology to onts table
                 newont = Onts.objects.create(
                     name=config['title'], ns=ont['ontologyId'], path=ont['fileLocation'], homepage=config['homepage'],
-                    description=config['description'], trmcnt=ont['numberOfTerms'], version=ont['version'],
-                    langs=", ".join(ont['languages']), updated=datetime.now(tz)
+                    description=config['description'], trmcnt=ont['numberOfTerms'], updated=datetime.now(tz)
                 )
                 newont.save()
+                print("added " + ont['ontologyId'] + " to the database")
+
+                # add join to onts_servers
+                newos = OntsServers.objects.create(
+                    svrid=svr, ontid=newont, langs=langs, version=ont['version']
+                )
+                newos.save()
+                print("added join for ontology " + ont['ontologyId'])
+
         # create output json
         olist.update({ont['ontologyId']: config['title']})
         temp = dict(sorted(olist.items(), key=lambda item: str(item[1].lower())))

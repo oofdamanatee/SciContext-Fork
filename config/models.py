@@ -65,7 +65,7 @@ class Servers(models.Model):
     homepage = models.CharField(max_length=128)
     apiurl = models.CharField(max_length=256)
     apikey = models.CharField(max_length=256, blank=True, null=True)
-    headers = models.CharField(max_length=256, blank=True, null=True)
+    version = models.CharField(max_length=64, blank=True, null=True)
     updated = models.DateTimeField()
 
     class Meta:
@@ -83,8 +83,6 @@ class Onts(models.Model):
     homepage = models.CharField(max_length=256, blank=True, null=True)
     servers = models.ManyToManyField(Servers)
     trmcnt = models.IntegerField(blank=True, null=True)
-    version = models.CharField(max_length=16, blank=True, null=True)
-    langs = models.CharField(max_length=64, blank=True, null=True)
     updated = models.DateTimeField()
 
     class Meta:
@@ -98,6 +96,8 @@ class Onts(models.Model):
 class OntsServers(models.Model):
     ontid = models.ForeignKey(Onts, on_delete=models.DO_NOTHING, db_column='onts_id')
     svrid = models.ForeignKey(Servers, on_delete=models.DO_NOTHING, db_column='servers_id')
+    version = models.CharField(max_length=16, blank=True, null=True)
+    langs = models.CharField(max_length=64, blank=True, null=True)
 
     class Meta:
         managed = False
