@@ -13,13 +13,12 @@ def svronts(svrid):
     olist = []
     # what type of server?
     if svr.type == 'onto':
-        # chooise which server
+        # choose which server
+        client = None
         if svr.name == "BioPortal":
             client = BioPortalClient(svr.apikey)
         elif svr.name == "AgriPortal":
             client = AgroPortalClient(svr.apikey)
-        else:
-            client = OntoPortalClient(svr.apikey)
 
         onts = client.get_ontologies()
         for ont in onts:

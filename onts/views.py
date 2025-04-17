@@ -4,12 +4,10 @@ from config.functions import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from config.ols_functions import *
-import urllib.request
-import json
 
 
 def index(request):
-    """view to generate list of namespaces"""
+    """ view to generate a list of namespaces """
     onts = getonts()
     return render(request, "onts/index.html", {'onts': onts})
 
@@ -19,13 +17,13 @@ def view(request, ontid):
     ont = getont(ontid)
     trms = gettrms(ontid)
     if not trms:
-        # on terms loaded so go get list from the server
-        loaded = 'no'
+        # no terms loaded, so get a list from the server
         svrs = ont.servers.all()
         for svr in svrs:
             if svr.type == 'ols':
                 trms = svronttrms(svr.id, ontid)
                 break
+        loaded = 'no'
     else:
         loaded = 'yes'
 
@@ -58,14 +56,14 @@ def add(request):
 
 @csrf_exempt
 def ontget(request, svrid, ontid):
-    # get current list of ontologies on server
+    # get the current list of ontologies on server
     sonts = svronttrms(svrid, ontid)
     return JsonResponse(sonts, safe=False, status=200)
 
 
 @csrf_exempt
 def ontupd(request, svrid, ontid):
-    # load DB with list of terms in an ontology (from a specific server)
+    # load DB with a list of terms in an ontology (from a specific server)
     ontload(svrid, ontid)
     return redirect('/onts/view/' + str(ontid))
 

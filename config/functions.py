@@ -116,7 +116,7 @@ def termsbyont(ontid):
 def ctxonts(svrid):
     """
     gets the ontologies and then filters for only those already in contexts
-    namespaces are already aligned otherwise this will not work
+    namespaces are already aligned, otherwise this will not work
     """
     kept = []
     aliases = list(ontaliases())

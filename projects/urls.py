@@ -1,4 +1,4 @@
-""" urls for the projects app """
+""" urls for the project app """
 from django.urls import path
 from projects import views
 

@@ -15,7 +15,7 @@ def addctxfile(path, message, file, repo="SciContext", token=ghtoken):
     :param token: GitHub user token
 
     return None
-    :raises Exception: if file with the specified name cannot be found in the repo
+    :raises Exception: if the file with the specified name cannot be found in the repo
     """
 
     # get repo

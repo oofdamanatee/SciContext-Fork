@@ -1,4 +1,4 @@
-""" fields view file """
+""" the field table view file """
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from config.functions import *
@@ -8,7 +8,7 @@ import json
 
 
 def index(request):
-    """view to generate list of namespaces"""
+    """ view to generate a list of namespaces """
     flds = getflds()
     return render(request, "fields/index.html", {'flds': flds})
 
@@ -68,7 +68,7 @@ def delete(request):
 
 @csrf_exempt
 def add(request):
-    # save new field
+    # save the new field
     if request.method == "POST":
         data = request.POST
         ctxid = data['ctxid']

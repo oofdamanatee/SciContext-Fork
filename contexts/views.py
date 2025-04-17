@@ -65,7 +65,7 @@ def add(request):
             ctx.subcontexts = ','.join(temp)  # bizarre syntax, but it works!
         else:
             ctx.subcontexts = None
-        # get project prefix if there is one
+        # get the project prefix if there is one
         pre = ''
         if ctx.project_id:
             pre = ctx.project.prefix + '_'
@@ -103,7 +103,7 @@ def jsfldadd(request):
         data = request.POST
         fldid = data['fldid']
         ctxid = data['ctxid']
-        # check if field exists (assume context does)
+        # check if the field exists (assume context does)
         fld = Fields.objects.get(id=fldid)
         if not fld:
             fld = Fields()
@@ -111,7 +111,7 @@ def jsfldadd(request):
             fld.datatype = data['datatype']
             fld.cardinality = data['card']
         fld.save()
-        # create join table entry
+        # create the join table entry
         cf = ContextsFields()
         cf.field_id = fldid
         cf.context_id = ctxid

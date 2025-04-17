@@ -31,7 +31,7 @@ def svronttrms(svrid, ontid):
     if svr.type == 'ols':
         client = Ols4Client(svr.apiurl)
         ns = ont.ns
-        resp = client.get_terms(ns, {})
+        resp = client.get_terms(ns)
         terms = resp.embedded.terms
         for term in terms:
             desc = None
@@ -51,7 +51,7 @@ def svrsearch(svrid, query):
     if svr.type == 'ols':
         client = Ols4Client(svr.apiurl)
         # local = true indicates that the term is defined in the current ontology (not reused)
-        resp = client.search(query,  params={"exact": 'true', "local": 'true'})
+        resp = client.search(query)
         hits = resp.response.docs
         for hit in hits:
             # only get terms where the title is exact (exact above searched more than the title)

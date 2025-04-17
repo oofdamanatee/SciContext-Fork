@@ -4,17 +4,15 @@ from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 from config.functions import *
-import ast
 import json
 import urllib.error
 import urllib.parse
 import urllib.request
-import re
 
 
 # Create your views here.
 def index(request):
-    """view to generate list of namespaces"""
+    """ view to generate a list of namespaces """
     termz = gettrms()
     return render(request, "terms/index.html", {'terms': termz})
 
@@ -36,7 +34,7 @@ def add(request):
         term.title = data['title']
         term.definition = data['definition']
         term.code = data['code']
-        if data['ns'].isnumeric():  # ns is an integer (as a string) if term is from local ontology
+        if data['ns'].isnumeric():  # ns is an integer (as a string) if the term is from a local ontology
             ont = Onts.objects.get(id=data['ns'])
         else:
             ont = Onts.objects.get(ns=data['ns'], server_id=data['svrid'])  # ns is the text code for the ontology

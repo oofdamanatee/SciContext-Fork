@@ -1,11 +1,12 @@
 """ servers view file """
 from django.shortcuts import render, redirect
 from config.functions import *
+from datetime import datetime
 
 
 # Create your views here.
 def index(request):
-    """view to generate list of ontology servers"""
+    """ view to generate a list of ontology servers """
     projects = getprjs()
     return render(request, "projects/index.html", {'projects': projects})
 
@@ -33,7 +34,7 @@ def add(request):
         p.description = data['desc']
         p.prefix = data['prefix']
         p.prjurl = data['prjurl']
-        p.updated = datetime.datetime.now()
+        p.updated = datetime.now()
         p.save()
         return redirect('/projects/')
 

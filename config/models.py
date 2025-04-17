@@ -106,7 +106,7 @@ class OntsServers(models.Model):
 
 
 class Terms(models.Model):
-    """ contexts terms table """
+    """ terms table """
     title = models.CharField(max_length=256)
     definition = models.CharField(max_length=2048, blank=True, null=True)
     code = models.CharField(max_length=64)
