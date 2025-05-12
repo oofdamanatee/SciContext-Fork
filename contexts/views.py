@@ -16,6 +16,8 @@ def home(request):
     ctxcnt = Contexts.objects.all().count()
     return render(request, "home.html", {'ctxcnt': ctxcnt})
 
+def tutorial(request):
+    return render(request, "tutorial.html")
 
 def index(request):
     ctxs = getctxs()

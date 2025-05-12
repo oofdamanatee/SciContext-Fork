@@ -1,14 +1,49 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %} SciContext Home {% endblock %}
 {% block content %}
-    <h2>SciContext: JSON-LD context file creation for all</h2>
-    <div class="card bg-light p-3 mb-2">
-        <p class="mb-0 justify-content">Semantic data is becoming an important part of the data publising landscape. Any
-        encoding of RDF (Resource Description Framework) requires that you annotate your data, so it can be converted
-        into RDF triples - subject, predicate, object statements of knowledge.  For the JSON for linked data encoding
-        (JSON-LD) of RDF, semantic annotation of data is provided through the inclusion of context files.  If you are 
-            developing JSON-LD files this can be an issue as not only do you need to create them, you need to make
-        them available online so the conversion to RDF can be done.  This Django project can help you create, manage, 
-            and deploy any/all context files you need for your application(s).</p>
+    <h2>SciContext: A JSON-LD Context File Development System</h2>
+    <div class="row">
+        <div class="col">
+            <div class="card bg-light p-3 mb-4">
+                <p class="mb-0 justify-content">Semantic data is becoming an important part of the data publishing landscape.
+                    Any encoding of RDF (Resource Description Framework) requires that you annotate your data, so it can be
+                    converted into RDF triples - subject, predicate, object statements of knowledge.  For the JSON for linked
+                    data encoding (JSON-LD) of RDF, semantic annotation of data is provided through the inclusion of
+                    <a href="https://niem.github.io/json/reference/json-ld/context/" target="_blank">context files</a>.
+                    If you are developing JSON-LD files this can be an issue as not only do you need to create them,
+                    you need to make them available online so the conversion to RDF can be done.  This Django project
+                    allows you to create, manage, and deploy any/all context files you need for your application(s).</p>
+            </div>
+            <p>This software is a web-based processing system, built in Django, to manage the creation and publishing of
+                <a href="https://json-ld.org/" target="_blank">JSON-LD</a> context files for JSON-LD data. As
+                JSON-LD files are an encoding of the resource description framework (<a href="https://www.w3.org/TR/rdf11-schema/">RDF</a>),
+                context files are needed to provide the semantic annotation (meaning) of data defined in a JSON-LD file,
+                thus allowing them to be converted into RDF <a href="https://en.wikipedia.org/wiki/Semantic_triple" target="_blank">triples</a>.</p>
+            <p>This application can be used for creation of context files for any JSON-LD data. Additionally, you can publish
+                the context files to the GitHub pages branch of your GitHub repository, making them available to your JSON-LD.</p>
+            <h4>How the system is set up</h4>
+            <p>As there are many ontologies that have been developed, there are many places online that you might need to go
+                to. Thankfully, there are now some centralized websites where ontologies are not only aggregated, but
+                also indexed and searchable. SciContext takes advantage of these ontology 'lookup' servers as the source
+                of the defined concepts in the ontologies they aggregate.</p>
+            <p>So, this application provides access (dropdown menu above) to the following resources to allow you
+                to create and publish your JSON-LD context files:</p>
+            <ul>
+                <li><a href="/contexts">Contexts</a>: The context files that you create.</li>
+                <li><a href="/fields">Fields</a>: Fields are metadata entries that you define and add to your context files.</li>
+                <li><a href="/onts">Ontologies</a>: General information about ontologies and the domains they define.</li>
+                <li><a href="/projects">Projects</a>: Projects help organize your context files.  Useful, but not required.</li>
+                <li><a href="/servers">Servers</a>: Ontology servers where you can search for definitions of concepts.</li>
+                <li><a href="/terms">Terms</a>: Specific concepts from ontologies that you want to use to create entries in your context files.</li>
+            </ul>
+        </div>
+        <div class="col pt-5 pb-5">
+            <img src="{% static 'images/scicontext_data_model.jpg' %}" class="img-fluid" alt="Schema"/>
+            <div class="card bg-light p-3 mt-4">
+                <p class="mb-0 justify-content">Follow <a href="tutorial">this tutorial</a> to create your first
+                    context file and publish it via your GitHub account.</p>
+            </div>
+        </div>
     </div>
 {% endblock %}

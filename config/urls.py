@@ -4,6 +4,8 @@ from contexts import views
 
 urlpatterns = [
     path('', views.home, name='SciContext homepage'),
+    path('tutorial', views.tutorial, name='SciContext tutorial'),
+
     path('contexts/', include('contexts.urls')),
     path('fields/', include('fields.urls')),
     path('onts/', include('onts.urls')),
