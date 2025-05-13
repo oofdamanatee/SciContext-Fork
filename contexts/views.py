@@ -10,6 +10,7 @@ from config.settings import *
 from config.git_functions import *
 from .forms import ContextAddForm
 import os
+import werkzeug.utils
 
 
 def home(request):
@@ -177,12 +178,15 @@ def jswrtctx(request, ctxid: int):
     if ctx.project_id:
         fpath += ctx.project.prefix + '_'
     fpath += ctx.filename + '.jsonld'
-    jsn = json.dumps(jld, separators=(',', ':'))
-    # save local
-    os.makedirs(os.path.dirname(BASE_DIR + '/ctxs/'), exist_ok=True)  # create a directory if not exist
-    with open(fpath, "w") as f:
-        f.write(jsn)
-    f.close()
-    # save on GitHub
-    resp = addctxfile(fpath, 'commit via API ' + str(datetime.now()), jsn)
-    return JsonResponse({"response": resp}, status=200)
+    if werkzeug.utils.secure_filename(fpath):
+        jsn = json.dumps(jld, separators=(',', ':'))
+        # save local
+        os.makedirs(os.path.dirname(BASE_DIR + '/ctxs/'), exist_ok=True)  # create a directory if not exist
+        with open(fpath, "w") as f:
+            f.write(jsn)
+        f.close()
+        # save on GitHub
+        resp = addctxfile(fpath, 'commit via API ' + str(datetime.now()), jsn)
+        return JsonResponse({"response": resp}, status=200)
+    else:
+        return JsonResponse({"response": "failure"}, status=500)

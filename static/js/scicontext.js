@@ -42,7 +42,7 @@ $(document).ready(function() {
             url: 'http://127.0.0.1:8001/terms/byont/' + svrid + '/' + ontid,
             success: function (data) {
                 let cnt = data.length;
-                let div = $("#terms");
+                let div = $.find("#terms");
                 for(let i = 0; i<cnt; i++) {
                     let trm = data[i];
                     let btn = '<input class="btn btn-sm btn-success item m-1" data-svrid="' + svrid + '" data-code="' + trm['code'] + '" data-content="' + trm['label'] + '" type="button" title="' + trm['label'] + '" value="' + trm['label'] + '">'
@@ -97,7 +97,7 @@ $(document).ready(function() {
             success: function (data) {
                 let terms = data['terms'];
                 let cnt = terms.length;
-                let div = $("#terms");
+                let div = $.find("#terms");
                 div.html('');
                 for(let i = 0; i<cnt; i++) {
                     let term = terms[i];
@@ -217,11 +217,11 @@ $(document).ready(function() {
 
     // search and show/hide terms in card
     $("#trmsrc").on('click',function(){
-        let srcstr = $('#srcstr').val();
-        let svrid = $('#svrsel option:selected').val();
-        let div = $("#terms");
-        let spin = $('#spinner');
-        let sub = $('#subsrc');
+        let srcstr = $.find('#srcstr').val();
+        let svrid = $.find('#svrsel option:selected').val();
+        let div = $.find("#terms");
+        let spin = $.find('#spinner');
+        let sub = $.find('#subsrc');
         div.empty();  // remove previous search results
         spin.show();  // show spinner
         sub.hide();  // hide subsearch input in footer
@@ -376,8 +376,8 @@ $(document).ready(function() {
 
     // generic delete DB entry POST
     $('.postdel').on('click', function () {
-        let dbid = $(this).attr('data-id');
-        let tbl = $(this).attr('data-tbl');
+        let dbid = $.find(this).attr('data-id');
+        let tbl = $.find(this).attr('data-tbl');
         const confirmed = confirm("Are you sure you want to delete this " + tbl + "?");
         if (confirmed) {
             console.log('Confirmed ' + tbl);
