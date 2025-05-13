@@ -234,10 +234,14 @@ $(document).ready(function() {
                 let cnt = data.length;
                 for(let i = 0; i<cnt; i++) {
                     let trm = data[i];
-                    let disabled = ''; let message = trm['type'];
-                    if(trm['local'] === "yes") {
+                    let disabled; let message;
+                    if(trm['local'].toString() === "yes") {  // has an RTCIce error without '.toString'
                         disabled = ' disabled';
                         message = "Added!";
+                    }
+                    else {
+                        disabled = '';
+                        message = trm['type'];
                     }
                     let disp = '(<span class="emph_green">' + trm['ns'] + '</span>) [' + trm['code'] + '] ' +
                         trm['title'] + ': <em>' + trm['defn'] + '</em> (<span class="emph_red">' + message + '</span>)';
@@ -368,6 +372,22 @@ $(document).ready(function() {
         $.get('/onts/ontsee/' + svrid + '/' + ontid, function( tdata ) {
             $('#terms').val(tdata);
         });
+    });
+
+    // generic delete DB entry POST
+    $('.postdel').on('click', function () {
+        let dbid = $(this).attr('data-id');
+        let tbl = $(this).attr('data-tbl');
+        const confirmed = confirm("Are you sure you want to delete this " + tbl + "?");
+        if (confirmed) {
+            console.log('Confirmed ' + tbl);
+            $.post('/' + tbl + 's/delete/', {id: dbid})
+            .done(function (data) {
+                if (data === 'success') { window.location.replace('/' + tbl + 's'); }
+                else { alert("Deletion error :("); }
+            });
+        }
+        else { return false; }
     });
 
 });

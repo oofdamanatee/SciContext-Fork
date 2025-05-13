@@ -9,7 +9,7 @@
             <a title="Edit" class="form-control btn btn-success" href="/fields/edit/{{ field.id }}">Edit</a>
         </div>
         <div class="col-1">
-            <a title="Delete" class="form-control btn btn-danger" href="/fields/delete/{{ field.id }}">Delete</a>
+            <button title="Delete" class="form-control btn btn-danger postdel" data-id="{{ field.id }}" data-tbl="field" href="/fields/delete">Delete</button>
         </div>
         <div class="col-2">
             <select id="ctxfldadd" name="ctxfldadd" class="form-control" aria-label="Add field to context">
@@ -25,7 +25,7 @@
         <div class="col-10 offset-1 ">
             <ul>
             <li>Category: {{ field.category }}</li>
-            <li>Term: <a href="/terms/view/{{ field.term.id }}">{{ field.term.title }}</a> ({{ field.term.definition }}}<br/>
+            <li>Term: <a href="/terms/view/{{ field.term.id }}">{{ field.term.title }}</a> ({{ field.term.definition }})<br/>
                 [From: {{ field.term.ont.name }}]
             </li>
             <li>Datatype: {{ field.datatype }}</li>

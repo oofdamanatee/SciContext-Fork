@@ -2,7 +2,6 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_exempt
-from datetime import datetime
 from config.functions import *
 import json
 import urllib.error
@@ -63,7 +62,7 @@ def byont(request, svrid, ontid):
 
 @csrf_exempt
 def trmsrc(request, svrid, srcstr):
-    # remove any URL encoding in the incomg search string
+    # remove any URL encoding in the incoming search string
     srcstr = urllib.parse.unquote(srcstr)
     # search the OLS server
     output = svrsearch(svrid, srcstr)
