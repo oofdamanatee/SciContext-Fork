@@ -10,4 +10,6 @@ urlpatterns = [
     path("ontget/<svrid>", views.ontget, name='Server ontology update (JS)'),
     path("ontupd/<svrid>", views.ontupd, name='Load onts in server to DB'),
     path("bysvr/<svrid>", views.bysvr, name='Ontology list by server'),
+    path("getlocal/<ontid>", views.getlocal, name='Local ontology content'),
+
 ]

@@ -1,10 +1,14 @@
 """ onts view file """
+from io import BytesIO
+
 from django.shortcuts import render, redirect
 from config.functions import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from config.ols_functions import *
-
+from rdflib import Graph, OWL, RDF, RDFS
+from datetime import datetime
+import requests
 
 def index(request):
     """ view to generate a list of namespaces """
@@ -15,11 +19,12 @@ def index(request):
 def view(request, ontid):
     """view to show all data about a namespace"""
     ont = getont(ontid)
-    trms = gettrms(ontid)
-    if not trms:
+    cons = getcons(ontid)
+    if not cons:
+        # TODO!
         # no terms loaded, so get a list from the server
-        svrs = ont.servers.all()
-        for svr in svrs:
+        joins = ont.ontsservers_set.all()
+        for svr in joins:
             if svr.type == 'ols':
                 trms = svronttrms(svr.id, ontid)
                 break
@@ -27,7 +32,7 @@ def view(request, ontid):
     else:
         loaded = 'yes'
 
-    return render(request, "onts/view.html", {'ont': ont, 'trms': trms, 'loaded': loaded})
+    return render(request, "onts/view.html", {'ont': ont, 'cons': cons, 'loaded': loaded})
 
 
 def add(request):
@@ -38,7 +43,7 @@ def add(request):
         o = Onts()
         o.name = data['name']
         o.ns = data['alias']
-        o.path = data['path']
+        o.url = data['url']
         o.homepage = data['homepage']
         o.server_id = data['svrid']
         o.save()
@@ -63,9 +68,12 @@ def ontget(request, svrid, ontid):
 
 @csrf_exempt
 def ontupd(request, svrid, ontid):
-    # load DB with a list of terms in an ontology (from a specific server)
+    # load DB with a list of terms in an ontology (from a specific server) into concepts
     ontload(svrid, ontid)
-    return redirect('/onts/view/' + str(ontid))
+    if is_ajax(request):
+        return "success"
+    else:
+        return redirect('/onts/view/' + str(ontid))
 
 
 @csrf_exempt
@@ -73,3 +81,32 @@ def bysvr(request, svrid):
     # get a list of ontologies on a server
     ontlist = svronts(svrid)
     return JsonResponse(ontlist, safe=False, status=200)
+
+
+@csrf_exempt
+def getlocal(request, ontid):
+    ont = getont(ontid)
+    file = requests.get(ont.url)
+    g = Graph()
+    # find all classes (subjects) and properties (relationships)
+    classes = []
+    if ont.url.find('ttl') != -1:
+        g.parse(BytesIO(file.content), format='turtle')
+        for subj, obj in g.subject_objects(predicate=RDF.type):
+            if obj == OWL.ObjectProperty or obj == OWL.Class:
+                if str(subj).find('http') != -1:
+                    classes.append(subj)
+    # iterate to get labels and description (comment etc.)
+    for cls in classes:
+        chunks = cls.split('/')
+        sub = chunks[-1]
+        con, created = Concepts.objects.get_or_create(
+            name=sub,
+            ont_id=ontid
+        )
+        con.updated = datetime.now()
+        con.save()
+    # update the ontology for this last time this update was done
+    ont.lastconupd = datetime.now()
+    ont.save()
+    return "success"

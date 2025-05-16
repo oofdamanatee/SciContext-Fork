@@ -1,6 +1,7 @@
 """ functions file for the contexts app"""
 from config.ols_functions import *
 from datetime import datetime
+from django.db.models.functions import Lower
 
 
 def getprjs():
@@ -64,7 +65,7 @@ def svrontsdb(svrid):
 
 def ctxflds(cxtid):
     """get a list of fields for a context file"""
-    fldids = ContextsFields.objects.get(context_id=cxtid).values_list('field_id', flat=True)
+    fldids = ContextsFields.objects.filter(context_id=cxtid).values_list('field_id', flat=True)
     flds = Fields.objects.filter(fld_id__in=fldids)
     return flds
 
@@ -77,7 +78,7 @@ def getfld(fldid):
 
 def getonts():
     """get a list of namespaces"""
-    onts = Onts.objects.filter(name__isnull=False).order_by('name')
+    onts = Onts.objects.filter(name__isnull=False).order_by(Lower('name'))
     return onts
 
 
@@ -98,6 +99,15 @@ def gettrms(ontid=None):
         trms = Terms.objects.filter(ont_id=ontid).order_by('title')
     else:
         trms = Terms.objects.all().order_by('title')
+    return trms
+
+
+def getcons(ontid=None):
+    """get the list of all terms (or only those for one ontology)"""
+    if ontid:
+        trms = Concepts.objects.filter(ont_id=ontid).order_by('name')
+    else:
+        trms = Concepts.objects.all().order_by('title')
     return trms
 
 
@@ -164,7 +174,20 @@ def svrload(svrid):
 
 
 def ontload(svrid, ontid):
-    # get an ontologies' set of terms in a server
+    # get an ontologies' set of terms from a server
+    trms = svronttrms(svrid, ontid)
+    for trm in trms:
+        con, created = Concepts.objects.get_or_create(
+            name=trm['code'],
+            ont_id=ontid
+        )
+        con.updated = datetime.now()
+        con.save()
+    return True
+
+
+def loadtrms(svrid, ontid):
+    # get an ontologies' set of terms and add to terms table
     trms = svronttrms(svrid, ontid)
     for trm in trms:
         if not trm['title']:
@@ -201,3 +224,8 @@ def wpexists(url):
     except requests.exceptions.RequestException as e:
         print(f"Error occurred: {e}")
         return "error"
+
+
+def is_ajax(request):
+    return request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+

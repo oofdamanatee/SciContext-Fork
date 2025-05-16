@@ -6,7 +6,7 @@
                 <div class="card-header pt-1 pb-1">
                     <div class="row">
                         <div class="col-12">
-                            <h4>Add Ontology Namespace</h4>
+                            <h4>Add Ontology</h4>
                         </div>
                     </div>
                     <div id="aliases" class="invisible" hidden>:{{ aliases|join:":" }}:</div>
@@ -15,20 +15,20 @@
                     <form action="/onts/add/" method="post">
                         {% csrf_token %}
                         <div class="input-group row mb-2">
-                            <label for="name" class="col-form-label col-3" title="Identify the namespace">Name:</label>
-                            <input type="text" class="form-control col-8" name="name" id="name"/>
+                            <label for="name" class="col-form-label col-3" title="Identify the ontology">Name:</label>
+                            <input type="text" class="form-control col-8" name="name" id="name" placeholder="Add the ontology name"/>
                         </div>
                         <div class="input-group row mb-2">
                             <label for="alias" class="col-form-label col-3" title="Give a short (up to 4 char) alias">Alias:</label>
-                            <input type="text" class="form-control col-8" name="alias" id="alias" placeholder="Give a short (up to 4 char) alias"/>
+                            <input type="text" class="form-control col-8" name="alias" id="alias" placeholder="Give a short (up to 4 char) alias (namespace)"/>
                         </div>
                         <div class="input-group row mb-2">
-                            <label for="path" class="col-form-label col-3" title="Base URL of the ontology">Path:</label>
-                            <input type="text" class="form-control col-8" name="path" id="path"/>
+                            <label for="url" class="col-form-label col-3" title="Base URL of the ontology">Path:</label>
+                            <input type="text" class="form-control col-8" name="url" id="url" placeholder="Add the URL to access the ontology file"/>
                         </div>
                         <div class="input-group row mb-2">
                             <label for="homepage" class="col-form-label col-3" title="Website URL for ontology">Homepage:</label>
-                            <input type="text" class="form-control col-8" name="homepage" id="homepage"/>
+                            <input type="text" class="form-control col-8" name="homepage" id="homepage" placeholder="Add the URL for the ontology homepage"/>
                         </div>
                         <div class="row ps-2 pe-2 mb-2">
                             <select class="form-control" id="svrid" name="svrid" aria-label="Choose Ontology Server">

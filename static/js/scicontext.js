@@ -1,4 +1,6 @@
 $(document).ready(function() {
+    let port = '8002';
+
     // populate the ontsel select with ontologies from the chosen server
     $('#svrsel').on('change', function() {
         let svrid = $('#svrsel option:selected').val();
@@ -10,7 +12,7 @@ $(document).ready(function() {
             type: 'POST',
             dataType: "json",
             context: document.body,
-            url: 'http://127.0.0.1:8001/onts/bysvr/' + svrid,
+            url: 'http://127.0.0.1:' + port + '/onts/bysvr/' + svrid,
             success: function (data) {
                 let cnt = data.length;
                 for(let i = 0; i<cnt; i++) {
@@ -33,16 +35,16 @@ $(document).ready(function() {
     // populate the terms div with terms from the chosen ontologoy
     $('#ontsel').on('change', function() {
         // NOTE: ontid here is the ontology namespace, not a DB id as the request is done on the server
-        let ontid = $.find('#ontsel option:selected').val();
-        let svrid = $.find('#svrsel option:selected').val();
+        let ontid = $('#ontsel option:selected').val();
+        let svrid = $('#svrsel option:selected').val();
         $.ajax({
             type: 'POST',
             dataType: "json",
             context: document.body,
-            url: 'http://127.0.0.1:8001/terms/byont/' + svrid + '/' + ontid,
+            url: 'http://127.0.0.1:' + port + '/terms/byont/' + svrid + '/' + ontid,
             success: function (data) {
                 let cnt = data.length;
-                let div = $.find("#terms");
+                let div = $("#terms");
                 for(let i = 0; i<cnt; i++) {
                     let trm = data[i];
                     let btn = '<input class="btn btn-sm btn-success item m-1" data-svrid="' + svrid + '" data-code="' + trm['code'] + '" data-content="' + trm['label'] + '" type="button" title="' + trm['label'] + '" value="' + trm['label'] + '">'
@@ -80,7 +82,7 @@ $(document).ready(function() {
         else {
             $('#name').val(meta[0]);
             $('#alias').val(meta[1]);
-            $('#path').val(meta[2]);
+            $('#url').val(meta[2]);
             $('#homepage').val(meta[3]);
         }
         return false;
@@ -88,16 +90,16 @@ $(document).ready(function() {
 
     // for ols ont list in template terms/add.html
     $('#olsont').on('change', function() {
-        let ontid = $.find('#olsont option:selected').val();
+        let ontid = $('#olsont option:selected').val();
         $.ajax({
             type: 'POST',
             dataType: "json",
             context: document.body,
-            url: 'http://127.0.0.1:8001/terms/js/' + ontid,
+            url: 'http://127.0.0.1:' + port + '/terms/js/' + ontid,
             success: function (data) {
                 let terms = data['terms'];
                 let cnt = terms.length;
-                let div = $.find("#terms");
+                let div = $("#terms");
                 div.html('');
                 for(let i = 0; i<cnt; i++) {
                     let term = terms[i];
@@ -217,11 +219,13 @@ $(document).ready(function() {
 
     // search and show/hide terms in card
     $("#trmsrc").on('click',function(){
-        let srcstr = $.find('#srcstr').val();
-        let svrid = $.find('#svrsel option:selected').val();
-        let div = $.find("#terms");
-        let spin = $.find('#spinner');
-        let sub = $.find('#subsrc');
+        let srcstr = $('#srcstr').val();
+        let svrid = $('#svrsel option:selected').val();
+        let div = $("#terms");
+        let spin = $('#spinner');
+        let sub = $('#subsrc');
+        //alert(srcstr);
+        //return false;
         div.empty();  // remove previous search results
         spin.show();  // show spinner
         sub.hide();  // hide subsearch input in footer
@@ -229,7 +233,7 @@ $(document).ready(function() {
             type: 'POST',
             dataType: "json",
             context: document.body,
-            url: 'http://127.0.0.1:8001/terms/trmsrc/' + svrid + '/' + srcstr,
+            url: 'http://127.0.0.1:' + port + '/terms/trmsrc/' + svrid + '/' + srcstr,
             success: function (data) {
                 let cnt = data.length;
                 for(let i = 0; i<cnt; i++) {
@@ -369,9 +373,22 @@ $(document).ready(function() {
     $('#loadtrms').on('click', function () {
         let svrid = $(this).attr('data-svrid');
         let ontid = $(this).attr('data-ontid');
-        $.get('/onts/ontsee/' + svrid + '/' + ontid, function( tdata ) {
-            $('#terms').val(tdata);
-        });
+        if(svrid === '') {
+            // add local ont (not on ont server) into concepts
+            $.get('/onts/getlocal/' + ontid, function (tdata) {
+                if (tdata === "success") {
+                    { window.location.replace('/onts/view/' + ontid); }
+                }
+            });
+        }
+        else {
+            // use ont server to populate
+            $.get('/onts/svrupd/' + svrid + '/' + ontid, function( tdata ) {
+                if (tdata === "success") {
+                    { window.location.replace('/onts/view/' + ontid); }
+                }
+            });
+        }
     });
 
     // generic delete DB entry POST

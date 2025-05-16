@@ -26,6 +26,7 @@ class Projects(models.Model):
         return f"{self.name}"
 
 
+
 class Contexts(models.Model):
     name = models.CharField(max_length=64)
     project = models.ForeignKey(Projects, on_delete=models.DO_NOTHING, db_column='project_id', blank=True, null=True)
@@ -81,11 +82,12 @@ class Onts(models.Model):
     """ contexts onts table """
     name = models.CharField(max_length=64, null=True)
     ns = models.CharField(max_length=8)
-    path = models.CharField(unique=True, max_length=256, blank=True, null=True)
+    url = models.CharField(unique=True, max_length=256, blank=True, null=True)
     description = models.CharField(max_length=512, blank=True, null=True)
     homepage = models.CharField(max_length=256, blank=True, null=True)
     servers = models.ManyToManyField(Servers)
     trmcnt = models.IntegerField(blank=True, null=True)
+    lastconupd = models.DateTimeField(null=True)
     updated = models.DateTimeField()
 
     class Meta:
@@ -93,6 +95,18 @@ class Onts(models.Model):
         ordering = 'name',
         db_table = 'onts'
         app_label = 'onts'
+
+
+# used to index concepts across ontologies
+class Concepts(models.Model):
+    name = models.CharField(max_length=64)
+    ont = models.ForeignKey(Onts, on_delete=models.DO_NOTHING, db_column='ont_id', blank=True, null=True)
+    updated = models.DateTimeField(null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'concepts'
+        app_label = 'concepts'
 
 
 # used to work with data in join table when needed

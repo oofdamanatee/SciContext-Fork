@@ -9,9 +9,9 @@
                 {% if ont.description %}
                     <li>Description: {{ ont.description }}</li>
                 {% endif %}
-                <li>Path: {% if ont.path is None or ont.path == "NA" %}NA
+                <li>Path: {% if ont.url is None or ont.url == "NA" %}NA
                     {% else %}
-                        <a href="{{ ont.path }}" target="_blank">{{ ont.path }}</a>
+                        <a href="{{ ont.url }}" target="_blank">{{ ont.url }}</a>
                     {% endif %}
                 </li>
                 <li>Homepage: 

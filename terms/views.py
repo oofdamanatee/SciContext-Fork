@@ -38,13 +38,15 @@ def add(request):
         else:
             ont = Onts.objects.get(ns=data['ns'], server_id=data['svrid'])  # ns is the text code for the ontology
         term.ont_id = ont.id
-        term.iri = ont.path + '#' + data['code']
+        term.iri = ont.url + '#' + data['code']
         term.updated = datetime.now()
         term.save()
         return redirect('/terms/')
 
     svrs = Servers.objects.all()
-    onts = Onts.objects.filter(server_id=None)  # gets all ontologies that have been added local only
+    # gets all ontologies that have been added locally
+    ontids = OntsServers.objects.filter(svrid=None).values_list('ontid', flat=True)
+    onts = Onts.objects.filter(id__in=ontids)
     return render(request, "terms/add.html", {'svrs': svrs, 'onts': onts})
 
 
