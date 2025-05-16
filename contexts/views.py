@@ -10,6 +10,7 @@ from config.settings import *
 from config.git_functions import *
 from .forms import ContextAddForm
 import os
+import re
 import werkzeug.utils
 
 
@@ -176,7 +177,11 @@ def jswrtctx(request, ctxid: int):
     # check for being part of a project
     fpath = 'ctxs/'
     if ctx.project_id:
+        if not re.search(r"[A-Za-z0-9_]+", ctx.project.prefix):
+            return JsonResponse({"response": "prefix not allowed"}, status=500)
         fpath += ctx.project.prefix + '_'
+    if not re.search(r"[A-Za-z0-9_]+", ctx.filename):
+        return JsonResponse({"response": "filename not allowed"}, status=500)
     fpath += ctx.filename + '.jsonld'
     if werkzeug.utils.secure_filename(fpath):
         jsn = json.dumps(jld, separators=(',', ':'))
@@ -189,4 +194,4 @@ def jswrtctx(request, ctxid: int):
         resp = addctxfile(fpath, 'commit via API ' + str(datetime.now()), jsn)
         return JsonResponse({"response": resp}, status=200)
     else:
-        return JsonResponse({"response": "failure"}, status=500)
+        return JsonResponse({"response": "non-secure filepath"}, status=500)

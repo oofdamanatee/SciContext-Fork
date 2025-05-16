@@ -33,8 +33,8 @@ $(document).ready(function() {
     // populate the terms div with terms from the chosen ontologoy
     $('#ontsel').on('change', function() {
         // NOTE: ontid here is the ontology namespace, not a DB id as the request is done on the server
-        let ontid = $('#ontsel option:selected').val();
-        let svrid = $('#svrsel option:selected').val();
+        let ontid = $.find('#ontsel option:selected').val();
+        let svrid = $.find('#svrsel option:selected').val();
         $.ajax({
             type: 'POST',
             dataType: "json",
@@ -88,7 +88,7 @@ $(document).ready(function() {
 
     // for ols ont list in template terms/add.html
     $('#olsont').on('change', function() {
-        let ontid = $('#olsont option:selected').val();
+        let ontid = $.find('#olsont option:selected').val();
         $.ajax({
             type: 'POST',
             dataType: "json",
