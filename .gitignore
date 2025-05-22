@@ -24,3 +24,5 @@ config/ols_testing.py
 config/onto_testing.py
 config/testing.py
 .env
+*/playground.py
+static/data/*
