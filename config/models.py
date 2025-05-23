@@ -26,7 +26,6 @@ class Projects(models.Model):
         return f"{self.name}"
 
 
-
 class Contexts(models.Model):
     name = models.CharField(max_length=64)
     project = models.ForeignKey(Projects, on_delete=models.DO_NOTHING, db_column='project_id', blank=True, null=True)
@@ -113,6 +112,9 @@ class Concepts(models.Model):
 class OntsServers(models.Model):
     ontid = models.ForeignKey(Onts, on_delete=models.DO_NOTHING, db_column='onts_id')
     svrid = models.ForeignKey(Servers, on_delete=models.DO_NOTHING, db_column='servers_id')
+    clscnt = models.IntegerField(blank=True, null=True)
+    prpcnt = models.IntegerField(blank=True, null=True)
+    indcnt = models.IntegerField(blank=True, null=True)
     version = models.CharField(max_length=16, blank=True, null=True)
     langs = models.CharField(max_length=64, blank=True, null=True)
 

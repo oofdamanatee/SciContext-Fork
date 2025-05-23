@@ -1,4 +1,5 @@
 """ OLS API functions based on v4 of OLS (https://www.ebi.ac.uk/ols4/help) """
+""" may be obsolete due to API work in ols_functions SJC 05/22/25 """
 from config.models import *
 import requests
 from datetime import datetime

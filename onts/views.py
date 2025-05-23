@@ -2,11 +2,13 @@
 from io import BytesIO
 
 from django.shortcuts import render, redirect
+from django.template.defaultfilters import title
+
 from config.functions import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from config.ols_functions import *
-from rdflib import Graph, OWL, RDF, RDFS
+from rdflib import Graph, OWL, RDF
 from datetime import datetime
 import requests
 
@@ -23,11 +25,19 @@ def view(request, ontid):
     if not cons:
         # TODO!
         # no terms loaded, so get a list from the server
-        joins = ont.ontsservers_set.all()
-        for svr in joins:
-            if svr.type == 'ols':
-                trms = svronttrms(svr.id, ontid)
-                break
+        tmp = ont.ontsservers_set.all()[0]
+        tmpid = tmp.svrid_id
+        svr = Servers.objects.get(id=tmpid)
+        if svr.type == 'ols':
+            trms = olsonttrms(svr.id, ontid)
+            # add to the concepts table
+            for trm in trms:
+                con = Concepts(
+                    title=trm.title,
+                    ont_id=ontid,
+                    updated=datetime.now()
+                )
+                con.save()
         loaded = 'no'
     else:
         loaded = 'yes'
@@ -62,8 +72,14 @@ def add(request):
 @csrf_exempt
 def ontget(request, svrid, ontid):
     # get the current list of ontologies on server
-    sonts = svronttrms(svrid, ontid)
-    return JsonResponse(sonts, safe=False, status=200)
+    svr = Servers.objects.get(id=svrid)
+    trms = []
+    if svr.type == 'ols':
+        trms = olsonttrms(svrid, ontid)
+    elif svr.type == 'onto':
+        # TODO: add code!
+        pass
+    return JsonResponse(trms, safe=False, status=200)
 
 
 @csrf_exempt

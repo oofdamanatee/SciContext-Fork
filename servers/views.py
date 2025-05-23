@@ -1,5 +1,7 @@
 """ servers view file """
 from django.shortcuts import render, redirect
+from rdflib.extras.infixowl import Ontology
+
 from config.functions import *
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
@@ -64,8 +66,17 @@ def svrget(request, svrid):
 
 @csrf_exempt
 def ontupd(request, svrid):
-    # load DB with a list of ontologies on server
-    svrload(svrid)
+    # load DB with a list of ontologies from a server
+    svr = Servers.objects.get(id=svrid)
+    if svr.type == "ols":
+        onts = olsonts(svrid)
+        if onts:
+            for ns, ont in enumerate(onts):
+                found = Onts.objects.filter(ns=ns)
+
+    else:
+        pass
+
     return redirect('/servers/view/' + str(svrid))
 
 

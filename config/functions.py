@@ -1,5 +1,6 @@
 """ functions file for the contexts app"""
 from config.ols_functions import *
+from config.onto_functions import *
 from datetime import datetime
 from django.db.models.functions import Lower
 
@@ -143,6 +144,7 @@ def allonts():
     pass
 
 
+# load the ontologies from a server (still used?)
 def svrload(svrid):
     # get onts from server
     onts = svronts(svrid)
@@ -175,7 +177,13 @@ def svrload(svrid):
 
 def ontload(svrid, ontid):
     # get an ontologies' set of terms from a server
-    trms = svronttrms(svrid, ontid)
+    svr = Servers.objects.get(id=svrid)
+    trms = []
+    if svr.type == 'ols':
+        trms = olsonttrms(svrid, ontid)
+    elif svr.type == 'onto':
+        # TODO: add code!
+        pass
     for trm in trms:
         con, created = Concepts.objects.get_or_create(
             name=trm['code'],
@@ -188,7 +196,13 @@ def ontload(svrid, ontid):
 
 def loadtrms(svrid, ontid):
     # get an ontologies' set of terms and add to terms table
-    trms = svronttrms(svrid, ontid)
+    svr = Servers.objects.get(id=svrid)
+    trms = []
+    if svr.type == 'ols':
+        trms = olsonttrms(svrid, ontid)
+    elif svr.type == 'onto':
+        # TODO: add code!
+        pass
     for trm in trms:
         if not trm['title']:
             trm['title'] = "NA"
